@@ -45,16 +45,35 @@ function App() {
     zoom: 13
   });
 
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    }
+  }
+
+  function showPosition(position) {
+    setViewport(
+      {
+        width: '100vw',
+        height: '100vh',
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        zoom: 13
+      }
+    )
+  }
+
   useEffect(() => {
     const getPins = async () => {
       try {
-        const res = await axios.get("/pins");
+        const res = await axios.get(`${BASE_URL}/pins`);
         setPins(res.data.data)
       } catch (err) {
         console.log(err)
       }
     };
-    getPins()
+    getPins();
+    getLocation();
   }, [])
 
   const handleMarkerClick = (id, lat, long) => {
@@ -63,11 +82,14 @@ function App() {
   }
 
   const handleDoubleClick = (e) => {
-    const [long, lat] = e.lngLat;
-    setNewPlace({
-      latitude: lat,
-      longitude: long
-    });
+    if (currentUser) {
+      const [long, lat] = e.lngLat;
+      setNewPlace({
+        latitude: lat,
+        longitude: long
+      });
+    }
+
   }
 
   const handleSubmit = async (e) => {
@@ -135,7 +157,6 @@ function App() {
                 <option value="Restaurant">Restaurant</option>
                 <option value="Hotel">Hotel</option>
                 <option value="Other">Other</option>
-
               </select>
 
             </div>
@@ -232,6 +253,7 @@ function App() {
                 <select onChange={(e) => setCategory(e.target.value)}>
                   <option value="Restaurant">Restaurant</option>
                   <option value="Hotel">Hotel</option>
+                  <option value="Hotel">Hospital</option>
                   <option value="Other">Other</option>
 
                 </select>
