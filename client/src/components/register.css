@@ -27,14 +27,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: slateblue;
+    color: tomato;
     font-weight: 700;
   }
   
   .registerBtn {
     border: none;
     padding: 5px;
-    background-color: slateblue;
+    background-color: tomato;
     color: white;
     cursor: pointer;
   }

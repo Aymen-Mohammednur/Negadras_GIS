@@ -8,6 +8,8 @@ import axios from 'axios';
 import { format } from 'timeago.js';
 import Register from './components/Register';
 import Login from './components/Login';
+import { Navbar, Container, NavbarBrand, NavDropdown, Nav, Button, InputGroup, FormControl, Dropdown, Card, ListGroup, ListGroupItem } from 'react-bootstrap'
+
 
 function App() {
 
@@ -26,12 +28,7 @@ function App() {
   // const [type, setType] = useState("Restaurant");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState(
-    [
-      { username: 'Aymenua', place: 'TEst', review: 'test', rating: '2', latitude: 9.00093091709374, longitude: 9.00093091709374 },
-      { username: 'Aymenua', place: 'TEst', review: 'test', rating: '2', latitude: 9.00093091709374, longitude: 9.00093091709374 },
-      { username: 'Aymenua', place: 'TEst', review: 'test', rating: '2', latitude: 9.00093091709374, longitude: 9.00093091709374 },
-      { username: 'Aymenua', place: 'TEst', review: 'test', rating: '2', latitude: 9.00093091709374, longitude: 9.00093091709374 }
-    ]
+    []
   );
 
   const [showRegister, setShowRegister] = useState(false);
@@ -122,12 +119,13 @@ function App() {
   const handleSearch = async (e) => {
     e.preventDefault();
     const res = await axios.get(`${BASE_URL}/pins/search`, { params: { query: query } })
-    // console.log(res.data.data)
+    console.log(res.data.data)
     setResults(res.data.data);
   }
 
   const handleFilter = async (e) => {
     e.preventDefault();
+    console.log("was called");
     console.log(e.target.value);
     const res = await axios.get(`${BASE_URL}/pins/category`, { params: { query: e.target.value } })
     setResults(res.data.data);
@@ -135,6 +133,50 @@ function App() {
 
   return (
     <div className="App">
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand href="#home">NEGADRAS</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="me-auto">
+              {/* <Nav.Link href="#features">Features</Nav.Link>
+              <Nav.Link href="#pricing">Pricing</Nav.Link>
+              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+              </NavDropdown> */}
+            </Nav>
+            <Nav>
+              {currentUser ?
+                (<Nav.Link eventKey={2} onClick={handleLogout} href="#memes"> Logout </Nav.Link>)
+                :
+                (
+                  <div>
+                    <div className="buttons">
+                      {/* <button className="button login" onClick={() => setShowLogin(true)}>Login</button> */}
+                      <Nav.Link eventKey={2} onClick={() => setShowLogin(true)} href="#memes">
+                        Login
+                      </Nav.Link>
+
+                      {/* 
+            <button className="button register" onClick={}>Register</button> */}
+                    </div>
+                    <div classNam="buttons">
+                      <Nav.Link eventKey={2} onClick={() => setShowRegister(true)} href="#deets">
+                        Register
+                      </Nav.Link>
+                    </div>
+                  </div>
+                )}
+
+
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
       <ReactMapGL
         {...viewport}
         mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
@@ -146,16 +188,40 @@ function App() {
 
         {currentUser &&
           <div className='grid'>
-            <div>
+            {/* <div>
               <input type="text" onChange={(e) => setQuery(e.target.value)} />
-              <button onClick={handleSearch}>Search</button>
-            </div>
+              <button variant="outline-warning" onClick={handleSearch}>Search</button>
+            </div> */}
+            <InputGroup className="mb-3">
+              <FormControl
+                placeholder="Search a place"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+                id="formcontrols"
+                onChange={(e) => setQuery(e.target.value)}
+              />
+              <Button variant="dark" id="button-addon2" onClick={handleSearch}>
+                Search
+              </Button>
+            </InputGroup>
+            {/* <Dropdown className='dp'>
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+                Business Type
+              </Dropdown.Toggle>
 
+              <Dropdown.Menu onChange={handleFilter}>
+                <Dropdown.Item href="#/action-1">Restaurant</Dropdown.Item>
+                <Dropdown.Item href="#/action-2">Hotel</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Hospital</Dropdown.Item>
+                <Dropdown.Item href="#/action-3">Other</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown> */}
             <div>
               <label>Type</label>
-              <select onChange={handleFilter}>
+              <select onChange={handleFilter}>  
                 <option value="Restaurant">Restaurant</option>
                 <option value="Hotel">Hotel</option>
+                <option value="Hospital">Hospital</option>
                 <option value="Other">Other</option>
               </select>
 
@@ -163,28 +229,52 @@ function App() {
 
             <div>
               {results?.map((result, i) => (
-                <Grid container spacing={24}>
 
-                  <Grid key={i} item xs={4}>
-                    <div className="cardResult">
-                      <label>Place</label>
-                      <h4 className="place">{result.place}</h4>
-                      <label>Category</label>
-                      <p className="desc">{result.category}</p>
-                      <label>Review</label>
-                      <p className="desc">{result.review}</p>
-                      <label>Rating</label>
-                      <div className="stars">
-                        {Array(result.rating).fill(<Star className="star" />)}
-                      </div>
+                <Card className='cardss'>
+                  <Card.Body>
+                    <Card.Title>{result.place}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">Category</Card.Subtitle>
+                    <Card.Text>
+                      {result.category}
+                    </Card.Text>
+                    <Card.Subtitle className="mb-2 text-muted">Review</Card.Subtitle>
+                    <Card.Text>
+                      {result.review}
+                    </Card.Text>
+                    <Card.Subtitle className="mb-2 text-muted">Rating</Card.Subtitle>
+                    <Card.Text>
+                      {Array(result.rating).fill(<Star className="star" />)}
+                    </Card.Text>
 
-                      <label>Information</label>
-                      <span className="username">Created by <b>{result.username}</b></span>
-                      <span className="date">{format(result.createdAt)}</span>
+                  </Card.Body>
+                  <Card.Footer className="text-muted">{result.username}</Card.Footer>
+                  <Card.Footer className="text-muted">{format(result.createdAt)}</Card.Footer>
+                </Card>
 
-                    </div>
-                  </Grid>
-                </Grid>
+                /*{
+                  <div className="cardResult">
+                  <Grid container spacing={24}>
+                <Grid key={i} item xs={4}>
+                 <div className="cardResult">
+                  <label>Place</label>
+                  <h4 className="place">{result.place}</h4>
+                  <label>Category</label>
+                  <p className="desc">{result.category}</p>
+                  <label>Review</label>
+                  <p className="desc">{result.review}</p>
+                  <label>Rating</label>
+                  <div className="stars">
+                    {Array(result.rating).fill(<Star className="star" />)}
+                  </div>
+
+                  <label>Information</label>
+                  <span className="username">Created by <b>{result.username}</b></span>
+                  <span className="date">{format(result.createdAt)}</span>
+
+                </div>
+                </Grid>} */
+
+                // </Grid> </div>
               ))}
 
             </div>
@@ -215,7 +305,7 @@ function App() {
                 closeOnClick={false}
                 onClose={() => setCurrentPlaceId(null)}
                 anchor="left" >
-                <div className="card">
+                <div className="cardss">
                   <label>Place</label>
                   <h4 className="place">{pin.place}</h4>
                   <label>Category</label>
@@ -274,13 +364,7 @@ function App() {
         }
 
 
-        {currentUser ?
-          (<button className="button logout" onClick={handleLogout}>Logout</button>)
-          :
-          (<div className="buttons">
-            <button className="button login" onClick={() => setShowLogin(true)}>Login</button>
-            <button className="button register" onClick={() => setShowRegister(true)}>Register</button>
-          </div>)}
+
 
         {showRegister &&
           <Register setShowRegister={setShowRegister} />}

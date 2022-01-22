@@ -50,10 +50,10 @@ exports.searchPins = async (req, res, next) => {
         // console.log("QUEEERYYYYYYY", query)
         const pins = await Pin.find({
             $or: [
-              { place: new RegExp(`^${query}$`, 'i') },
-              { category: new RegExp(`^${query}$`, 'i') },
+                { place: new RegExp(`^${query}$`, 'i') },
+                { category: new RegExp(`^${query}$`, 'i') },
             ],
-          });
+        });
         // console.log(pins)
         return res.status(200).json({
             success: true,
@@ -73,7 +73,7 @@ exports.searchPinsByCategory = async (req, res, next) => {
         // console.log("QUEEERYYYYYYY", query)
         const pins = await Pin.find({
             category: query
-          });
+        });
         // console.log(pins)
         return res.status(200).json({
             success: true,
